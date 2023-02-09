@@ -2,7 +2,7 @@
   <div>
     <div class="app flex" v-if="!isMobile">
       <the-navigation />
-      <div class="app-content flex">
+      <div class="app-content">
         <router-view />
       </div>
     </div>

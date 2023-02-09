@@ -1,91 +1,162 @@
-<script setup>
-import { RouterLink, RouterView } from "vue-router";
-import HelloWorld from "./components/HelloWorld.vue";
-</script>
-
 <template>
-  <header>
-    <img
-      alt="Vue logo"
-      class="logo"
-      src="@/assets/logo.svg"
-      width="125"
-      height="125"
-    />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
+  <div>
+    <div class="app flex" v-if="!isMobile">
+      <the-navigation />
+      <div class="app-content flex">
+        <router-view />
+      </div>
     </div>
-  </header>
-
-  <RouterView />
+    <div v-else class="mobile-message flex flex-column">
+      <h2>Это приложение не поддерживается на мобильных устройствах</h2>
+      <p>Чтобы пользоваться приложением, зайдите через планшет или компьютер</p>
+    </div>
+  </div>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+<script>
+import TheNavigation from "./components/TheNavigation.vue";
+
+export default {
+  components: { TheNavigation },
+  data() {
+    return {
+      isMobile: null,
+    };
+  },
+  methods: {
+    checkMobile() {
+      const windowWidth = window.innerWidth;
+      if (windowWidth < 750) {
+        this.isMobile = true;
+        return;
+      }
+      this.isMobile = false;
+    },
+  },
+  created() {
+    this.checkMobile();
+    window.addEventListener("resize", this.checkMobile);
+  },
+};
+</script>
+
+<style lang="scss">
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+body {
+  color: #fff;
+}
+.app {
+  background-color: #141625;
+  min-height: 100vh;
+  flex-direction: column;
+
+  @media (min-width: 900px) {
+    flex-direction: row;
+  }
+
+  .app-content {
+    padding: 0 20px;
+    flex: 1;
+    position: relative;
+  }
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
+.mobile-message {
+  background-color: #141625;
+  color: #fff;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
   text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
+  h2 {
+    margin-bottom: 16px;
   }
-
-  .logo {
-    margin: 0 2rem 0 0;
+}
+button,
+.button {
+  cursor: pointer;
+  padding: 16px 24px;
+  border-radius: 30px;
+  border: none;
+  font-size: 12px;
+  margin-right: 8px;
+  color: #fff;
+}
+.dark-purple {
+  background-color: #252945;
+}
+.red {
+  background-color: #ec5757;
+}
+.purple {
+  background-color: #7c5dfa;
+}
+.green {
+  background-color: #33d69f;
+}
+.orange {
+  background-color: #ff8f00;
+}
+// utility classes
+.flex {
+  display: flex;
+}
+.flex-column {
+  flex-direction: column;
+}
+.container {
+  width: 100%;
+  padding: 40px 10px;
+  max-width: 850px;
+  margin: 0 auto;
+  @media (min-width: 900px) {
+    padding-top: 72px;
   }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
+}
+.nav-link {
+  text-decoration: none;
+  color: initial;
+}
+// Status Button Styling
+.status-button {
+  &::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 8px;
   }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
+  font-size: 12px;
+  margin-right: 30px;
+  align-items: center;
+  padding: 8px 30px;
+  border-radius: 10px;
+}
+.paid {
+  &::before {
+    background-color: #33d69f;
   }
+  color: #33d69f;
+  background-color: rgba(51, 214, 160, 0.1);
+}
+.pending {
+  &::before {
+    background-color: #ff8f00;
+  }
+  color: #ff8f00;
+  background-color: rgba(255, 145, 0, 0.1);
+}
+.draft {
+  &::before {
+    background-color: #dfe3fa;
+  }
+  color: #dfe3fa;
+  background-color: rgba(223, 227, 250, 0.1);
 }
 </style>

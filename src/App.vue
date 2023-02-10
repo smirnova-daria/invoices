@@ -3,7 +3,7 @@
     <div class="app flex" v-if="!isMobile">
       <the-navigation />
       <div class="app-content">
-        <invoice-modal />
+        <invoice-modal v-if="invoiceModal" />
         <router-view />
       </div>
     </div>
@@ -17,6 +17,7 @@
 <script>
 import TheNavigation from "./components/TheNavigation.vue";
 import InvoiceModal from "./components/InvoiceModal.vue";
+import { mapState } from "vuex";
 export default {
   components: { TheNavigation, InvoiceModal },
   data() {
@@ -37,6 +38,9 @@ export default {
   created() {
     this.checkMobile();
     window.addEventListener("resize", this.checkMobile);
+  },
+  computed: {
+    ...mapState(["invoiceModal"]),
   },
 };
 </script>

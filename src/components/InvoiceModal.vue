@@ -169,6 +169,7 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 export default {
   data() {
     return {
@@ -196,6 +197,13 @@ export default {
       invoiceItemList: [],
       invoiceTotal: 0,
     };
+  },
+
+  methods: {
+    ...mapMutations(["TOGGLE_INVOICE"]),
+    closeInvoice() {
+      this.TOGGLE_INVOICE();
+    },
   },
 };
 </script>

@@ -97,7 +97,7 @@
         <div class="form-row flex">
           <div class="form-control flex flex-column">
             <label for="paymentTerms">Условия оплаты</label>
-            <select id="paymentTerms">
+            <select id="paymentTerms" v-model="paymentTerms">
               <option value="30">30 дней</option>
               <option value="60">60 дней</option>
             </select>
@@ -203,6 +203,26 @@ export default {
     ...mapMutations(["TOGGLE_INVOICE"]),
     closeInvoice() {
       this.TOGGLE_INVOICE();
+    },
+  },
+
+  created() {
+    this.invoiceDateUnix = Date.now();
+    this.invoiceDate = new Date(this.invoiceDateUnix).toLocaleDateString(
+      "ru-ru",
+      this.dateOptions
+    );
+  },
+
+  watch: {
+    paymentTerms() {
+      const futureDate = new Date();
+      this.paymentDueDateUnix = futureDate.setDate(
+        futureDate.getDate() + parseInt(this.paymentTerms)
+      );
+      this.paymentDueDate = new Date(
+        this.paymentDueDateUnix
+      ).toLocaleDateString("ru-ru", this.dateOptions);
     },
   },
 };

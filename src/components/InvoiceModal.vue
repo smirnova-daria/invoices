@@ -214,11 +214,15 @@ export default {
   z-index: 3;
   top: 0;
   left: 0;
-  width: 100%;
   height: 100vh;
   overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
   @media (min-width: 900px) {
     left: 90px;
+    width: calc(100% - 90px);
   }
 }
 .invoice-form {
@@ -229,6 +233,7 @@ export default {
   padding: 56px;
   box-shadow: 10px 4px 6px -1px rgba(0, 0, 0, 0.2),
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
   h2 {
     margin-bottom: 24px;
   }

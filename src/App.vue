@@ -3,7 +3,9 @@
     <div class="app flex" v-if="!isMobile">
       <the-navigation />
       <div class="app-content">
-        <invoice-modal v-if="invoiceModal" />
+        <transition name="invoice">
+          <invoice-modal v-if="invoiceModal" />
+        </transition>
         <router-view />
       </div>
     </div>
@@ -163,5 +165,16 @@ button,
   }
   color: #dfe3fa;
   background-color: rgba(223, 227, 250, 0.1);
+}
+
+//animate invoice form
+.invoice-enter-active,
+.invoice-leave-active {
+  transition: 0.8s;
+}
+
+.invoice-enter-from,
+.invoice-leave-to {
+  transform: translateX(-900px);
 }
 </style>

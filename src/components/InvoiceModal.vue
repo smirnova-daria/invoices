@@ -145,7 +145,11 @@
           </tr>
         </table>
         <div class="flex">
-          <button @click="addNewInvoiceItem" class="add-btn dark-purple">
+          <button
+            type="button"
+            @click="addNewInvoiceItem"
+            class="add-btn dark-purple"
+          >
             <span>+</span> Добавить услугу
           </button>
         </div>
@@ -153,12 +157,14 @@
       <!-- Save -->
       <div class="form-block">
         <div class="form-row save flex">
-          <button class="red" @click="closeInvoice">Отменить</button>
+          <button type="button" class="red" @click="closeInvoice">
+            Отменить
+          </button>
           <div>
-            <button class="dark-purple" @click="saveDraft">
+            <button type="submit" class="dark-purple" @click="saveDraft">
               Сохранить Черновик
             </button>
-            <button class="purple" @click="publishInvoice">
+            <button type="submit" class="purple" @click="publishInvoice">
               Опубликовать счет
             </button>
           </div>
@@ -169,6 +175,8 @@
 </template>
 
 <script>
+import db from "../firebase/firebaseInit.js";
+import { collection, addDoc } from "firebase/firestore";
 import { mapMutations } from "vuex";
 import { uid } from "uid";
 export default {
@@ -218,6 +226,56 @@ export default {
       this.invoiceItemList = this.invoiceItemList.filter(
         (item) => item.id !== id
       );
+    },
+    calcInvoiceTotal() {
+      this.invoiceTotal = 0;
+      this.invoiceItemList.forEach((item) => {
+        this.invoiceTotal += item.total;
+      });
+    },
+    saveDraft() {
+      this.invoiceDraft = true;
+    },
+    publishInvoice() {
+      this.invoicePending = true;
+    },
+    async uploadInvoice() {
+      if (this.invoiceItemList.length <= 0) {
+        alert("Вы не добавили услуги в счет");
+        return;
+      }
+
+      this.calcInvoiceTotal();
+
+      const docRef = await addDoc(collection(db, "invoices"), {
+        invoiceId: uid(6),
+        billerStreetAddress: this.billerStreetAddress,
+        billerCity: this.billerCity,
+        billerZipCode: this.billerZipCode,
+        billerCountry: this.billerCountry,
+        clientName: this.clientName,
+        clientEmail: this.clientEmail,
+        clientStreetAddress: this.clientStreetAddress,
+        clientCity: this.clientCity,
+        clientZipCode: this.clientZipCode,
+        clientCountry: this.clientCountry,
+        invoiceDate: this.invoiceDate,
+        invoiceDateUnix: this.invoiceDateUnix,
+        paymentTerms: this.paymentTerms,
+        paymentDueDate: this.paymentDueDate,
+        paymentDueDateUnix: this.paymentDueDateUnix,
+        productDescription: this.productDescription,
+        invoiceItemList: this.invoiceItemList,
+        invoiceTotal: this.invoiceTotal,
+        invoicePending: this.invoicePending,
+        invoiceDraft: this.invoiceDraft,
+        invoicePaid: null,
+      });
+
+      this.TOGGLE_INVOICE();
+    },
+    submitForm() {
+      this.uploadInvoice();
     },
   },
 

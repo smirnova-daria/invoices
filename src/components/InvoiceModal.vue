@@ -154,6 +154,7 @@
           </button>
         </div>
       </div>
+      <the-loader v-if="loading" />
       <!-- Save -->
       <div class="form-block">
         <div class="form-row save flex">
@@ -179,7 +180,9 @@ import db from "../firebase/firebaseInit.js";
 import { collection, addDoc } from "firebase/firestore";
 import { mapMutations } from "vuex";
 import { uid } from "uid";
+import TheLoader from "./TheLoader.vue";
 export default {
+  components: { TheLoader },
   data() {
     return {
       dateOptions: { year: "numeric", month: "short", day: "numeric" },
@@ -244,10 +247,10 @@ export default {
         alert("Вы не добавили услуги в счет");
         return;
       }
-
+      this.loading = true;
       this.calcInvoiceTotal();
 
-      const docRef = await addDoc(collection(db, "invoices"), {
+      await addDoc(collection(db, "invoices"), {
         invoiceId: uid(6),
         billerStreetAddress: this.billerStreetAddress,
         billerCity: this.billerCity,
@@ -271,6 +274,7 @@ export default {
         invoiceDraft: this.invoiceDraft,
         invoicePaid: null,
       });
+      this.loading = false;
 
       this.TOGGLE_INVOICE();
     },

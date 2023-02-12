@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="invoicesLoaded">
     <div class="app flex" v-if="!isMobile">
       <the-navigation />
       <div class="app-content">
@@ -21,7 +21,7 @@
 import TheNavigation from "./components/TheNavigation.vue";
 import InvoiceModal from "./components/InvoiceModal.vue";
 import ThePopup from "./components/ThePopup.vue";
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 export default {
   components: { TheNavigation, InvoiceModal, ThePopup },
   data() {
@@ -30,6 +30,7 @@ export default {
     };
   },
   methods: {
+    ...mapActions(["GET_INVOICES"]),
     checkMobile() {
       const windowWidth = window.innerWidth;
       if (windowWidth < 750) {
@@ -40,11 +41,12 @@ export default {
     },
   },
   created() {
+    this.GET_INVOICES();
     this.checkMobile();
     window.addEventListener("resize", this.checkMobile);
   },
   computed: {
-    ...mapState(["invoiceModal", "popup"]),
+    ...mapState(["invoiceModal", "popup", "invoicesLoaded"]),
   },
 };
 </script>

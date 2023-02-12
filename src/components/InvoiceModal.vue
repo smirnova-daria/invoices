@@ -212,14 +212,9 @@ export default {
   },
 
   methods: {
-    ...mapMutations(["TOGGLE_INVOICE", "TOGGLE_POPUP"]),
-    checkClick(e) {
-      if (e.target === this.$refs.invoiceWrap) {
-        this.TOGGLE_POPUP();
-      }
-    },
+    ...mapMutations(["TOGGLE_INVOICE"]),
     closeInvoice() {
-      this.TOGGLE_POPUP();
+      this.TOGGLE_INVOICE();
     },
     addNewInvoiceItem() {
       this.invoiceItemList.push({

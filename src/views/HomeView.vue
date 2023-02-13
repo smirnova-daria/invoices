@@ -5,7 +5,7 @@
         <header class="invoices-header flex">
           <div class="header-left flex-column">
             <h1>Счета</h1>
-            <p>Всего 4 счета</p>
+            <p>Всего {{ invoices.length }} счета(-ов)</p>
           </div>
           <div class="header-right flex">
             <div class="dropdown flex" @click="toggleFilterMenu">
@@ -24,14 +24,23 @@
             </button>
           </div>
         </header>
+        <section class="invoice-list flex flex-column">
+          <InvoiceInfo
+            v-for="(invoice, index) in invoices"
+            :key="index"
+            :invoice="invoice"
+          />
+        </section>
       </div>
     </section>
   </main>
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapMutations, mapState } from "vuex";
+import InvoiceInfo from "../components/InvoiceInfo.vue";
 export default {
+  components: { InvoiceInfo },
   data() {
     return {
       filterMenu: false,
@@ -46,6 +55,9 @@ export default {
       this.TOGGLE_INVOICE();
     },
   },
+  computed: {
+    ...mapState(["invoices"]),
+  },
 };
 </script>
 
@@ -56,6 +68,7 @@ main {
 .invoices-header {
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 48px;
   .header-left {
     h1 {
       margin-bottom: 16px;
@@ -84,7 +97,8 @@ main {
     right: 0;
     top: 35px;
     background-color: #1e2139;
-    border-radius: 20px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
     overflow: hidden;
     li {
       cursor: pointer;
@@ -107,5 +121,8 @@ main {
       background-color: #6b50d4;
     }
   }
+}
+.invoice-list {
+  gap: 24px;
 }
 </style>

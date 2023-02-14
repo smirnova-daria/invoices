@@ -24,13 +24,17 @@
             </button>
           </div>
         </header>
-        <section class="invoice-list flex flex-column">
+        <section
+          v-if="invoices.length !== 0"
+          class="invoice-list flex flex-column"
+        >
           <InvoiceInfo
             v-for="(invoice, index) in invoices"
             :key="index"
             :invoice="invoice"
           />
         </section>
+        <section v-else class="invoice-list-empty">Список счетов пуст</section>
       </div>
     </section>
   </main>
@@ -124,5 +128,9 @@ main {
 }
 .invoice-list {
   gap: 24px;
+}
+.invoice-list-empty {
+  font-size: 18px;
+  text-align: center;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <header class="flex">
     <nav>
-      <div class="logo flex">$$</div>
+      <router-link to="/" class="logo flex">$$</router-link>
     </nav>
   </header>
 </template>
@@ -22,6 +22,7 @@ header {
   }
 }
 .logo {
+  text-decoration: none;
   width: 90px;
   height: 90px;
   background-color: #7c5dfa;

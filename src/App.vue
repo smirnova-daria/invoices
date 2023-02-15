@@ -95,7 +95,7 @@ button,
   padding: 16px 24px;
   border-radius: 30px;
   border: none;
-  font-size: 12px;
+  font-size: 14px;
   margin-right: 8px;
   color: #fff;
 }
@@ -143,7 +143,7 @@ button,
     border-radius: 50%;
     margin-right: 8px;
   }
-  font-size: 12px;
+  font-size: 14px;
   margin-right: 30px;
   align-items: center;
   padding: 8px 30px;

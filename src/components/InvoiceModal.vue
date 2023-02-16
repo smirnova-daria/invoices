@@ -1,7 +1,8 @@
 <template>
   <div @click="checkClick" ref="invoiceWrap" class="invoice-wrap">
     <form class="invoice-form" @submit.prevent="submitForm">
-      <h2>Новый счет</h2>
+      <h2 v-if="!editInvoice">Новый счет</h2>
+      <h2 v-else>Редактирование счета</h2>
 
       <!-- Bill From  -->
       <div class="form-block">
@@ -162,11 +163,29 @@
             Отменить
           </button>
           <div>
-            <button type="submit" class="dark-purple" @click="saveDraft">
+            <button
+              type="submit"
+              class="dark-purple"
+              @click="saveDraft"
+              v-if="!editInvoice"
+            >
               Сохранить Черновик
             </button>
-            <button type="submit" class="purple" @click="publishInvoice">
+            <button
+              type="submit"
+              class="purple"
+              @click="publishInvoice"
+              v-if="!editInvoice"
+            >
               Опубликовать счет
+            </button>
+            <button
+              type="submit"
+              class="purple"
+              @click="updateInvoice"
+              v-if="editInvoice"
+            >
+              Обновить счет
             </button>
           </div>
         </div>
@@ -178,7 +197,7 @@
 <script>
 import db from "../firebase/firebaseInit.js";
 import { collection, addDoc } from "firebase/firestore";
-import { mapMutations } from "vuex";
+import { mapMutations, mapState } from "vuex";
 import { uid } from "uid";
 import TheLoader from "./TheLoader.vue";
 export default {
@@ -211,14 +230,25 @@ export default {
     };
   },
 
+  computed: {
+    ...mapState(["editInvoice", "currentInvoice"]),
+  },
+
   methods: {
-    ...mapMutations(["TOGGLE_INVOICE", "TOGGLE_POPUP"]),
+    ...mapMutations(["TOGGLE_INVOICE", "TOGGLE_POPUP", "TOGGLE_EDIT_INVOICE"]),
     closeInvoice() {
-      this.TOGGLE_POPUP();
+      this.TOGGLE_INVOICE();
+      if (this.editInvoice) {
+        this.TOGGLE_EDIT_INVOICE();
+      }
     },
     checkClick(e) {
       if (e.target === this.$refs.invoiceWrap) {
         this.TOGGLE_POPUP();
+
+        if (this.editInvoice) {
+          this.TOGGLE_EDIT_INVOICE();
+        }
       }
     },
     addNewInvoiceItem() {
@@ -289,11 +319,36 @@ export default {
   },
 
   created() {
-    this.invoiceDateUnix = Date.now();
-    this.invoiceDate = new Date(this.invoiceDateUnix).toLocaleDateString(
-      "ru-ru",
-      this.dateOptions
-    );
+    if (!this.editInvoice) {
+      this.invoiceDateUnix = Date.now();
+      this.invoiceDate = new Date(this.invoiceDateUnix).toLocaleDateString(
+        "ru-ru",
+        this.dateOptions
+      );
+    } else {
+      this.docId = this.currentInvoice.docId;
+      this.loading = this.currentInvoice.loading;
+      this.billerStreetAddress = this.currentInvoice.billerStreetAddress;
+      this.billerCity = this.currentInvoice.billerCity;
+      this.billerZipCode = this.currentInvoice.billerZipCode;
+      this.billerCountry = this.currentInvoice.billerCountry;
+      this.clientName = this.currentInvoice.clientName;
+      this.clientEmail = this.currentInvoice.clientEmail;
+      this.clientStreetAddress = this.currentInvoice.clientStreetAddress;
+      this.clientCity = this.currentInvoice.clientCity;
+      this.clientZipCode = this.currentInvoice.clientZipCode;
+      this.clientCountry = this.currentInvoice.clientCountry;
+      this.invoiceDateUnix = this.currentInvoice.invoiceDateUnix;
+      this.invoiceDate = this.currentInvoice.invoiceDate;
+      this.paymentTerms = this.currentInvoice.paymentTerms;
+      this.paymentDueDateUnix = this.currentInvoice.paymentDueDateUnix;
+      this.paymentDueDate = this.currentInvoice.paymentDueDate;
+      this.productDescription = this.currentInvoice.productDescription;
+      this.invoicePending = this.currentInvoice.invoicePending;
+      this.invoiceDraft = this.currentInvoice.invoiceDraft;
+      this.invoiceItemList = this.currentInvoice.invoiceItemList;
+      this.invoiceTotal = this.currentInvoice.invoiceTotal;
+    }
   },
 
   watch: {

@@ -116,7 +116,15 @@
 import { mapState, mapMutations } from "vuex";
 export default {
   methods: {
-    ...mapMutations(["SET_CURRENT_INVOICE"]),
+    ...mapMutations([
+      "SET_CURRENT_INVOICE",
+      "TOGGLE_EDIT_INVOICE",
+      "TOGGLE_INVOICE",
+    ]),
+    toggleEditInvoice() {
+      this.TOGGLE_EDIT_INVOICE();
+      this.TOGGLE_INVOICE();
+    },
   },
   computed: {
     ...mapState(["currentInvoice"]),

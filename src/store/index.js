@@ -9,6 +9,7 @@ export default createStore({
     popup: null,
     invoicesLoaded: null,
     currentInvoice: null,
+    editInvoice: null,
   },
   mutations: {
     TOGGLE_INVOICE(state) {
@@ -26,6 +27,9 @@ export default createStore({
     SET_CURRENT_INVOICE(state, payload) {
       const invoice = state.invoices.find((item) => item.invoiceId === payload);
       if (invoice) state.currentInvoice = invoice;
+    },
+    TOGGLE_EDIT_INVOICE(state) {
+      state.editInvoice = !state.editInvoice;
     },
   },
   actions: {

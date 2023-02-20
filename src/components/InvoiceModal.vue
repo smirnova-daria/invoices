@@ -179,12 +179,7 @@
             >
               Опубликовать счет
             </button>
-            <button
-              type="submit"
-              class="purple"
-              @click="updateInvoice"
-              v-if="editInvoice"
-            >
+            <button type="submit" class="purple" v-if="editInvoice">
               Обновить счет
             </button>
           </div>
@@ -196,8 +191,8 @@
 
 <script>
 import db from "../firebase/firebaseInit.js";
-import { collection, addDoc } from "firebase/firestore";
-import { mapMutations, mapState } from "vuex";
+import { collection, addDoc, setDoc, doc } from "firebase/firestore";
+import { mapMutations, mapState, mapActions } from "vuex";
 import { uid } from "uid";
 import TheLoader from "./TheLoader.vue";
 export default {
@@ -236,6 +231,7 @@ export default {
 
   methods: {
     ...mapMutations(["TOGGLE_INVOICE", "TOGGLE_POPUP", "TOGGLE_EDIT_INVOICE"]),
+    ...mapActions(["UPDATE_INVOICE"]),
     closeInvoice() {
       this.TOGGLE_INVOICE();
       if (this.editInvoice) {
@@ -314,7 +310,50 @@ export default {
       this.TOGGLE_INVOICE();
     },
     submitForm() {
-      this.uploadInvoice();
+      if (this.editInvoice) {
+        this.updateInvoice();
+      } else {
+        this.uploadInvoice();
+      }
+    },
+    async updateInvoice() {
+      if (this.invoiceItemList.length <= 0) {
+        alert("Вы не добавили услуги в счет");
+        return;
+      }
+      this.loading = true;
+      this.calcInvoiceTotal();
+
+      await setDoc(
+        doc(db, "invoices", this.docId),
+        {
+          billerStreetAddress: this.billerStreetAddress,
+          billerCity: this.billerCity,
+          billerZipCode: this.billerZipCode,
+          billerCountry: this.billerCountry,
+          clientName: this.clientName,
+          clientEmail: this.clientEmail,
+          clientStreetAddress: this.clientStreetAddress,
+          clientCity: this.clientCity,
+          clientZipCode: this.clientZipCode,
+          clientCountry: this.clientCountry,
+          paymentTerms: this.paymentTerms,
+          paymentDueDate: this.paymentDueDate,
+          paymentDueDateUnix: this.paymentDueDateUnix,
+          productDescription: this.productDescription,
+          invoiceItemList: this.invoiceItemList,
+          invoiceTotal: this.invoiceTotal,
+        },
+        { merge: true }
+      );
+
+      this.loading = false;
+
+      const data = {
+        docId: this.docId,
+        routeId: this.$route.params.id,
+      };
+      this.UPDATE_INVOICE(data);
     },
   },
 

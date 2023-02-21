@@ -121,7 +121,11 @@ export default {
       "TOGGLE_EDIT_INVOICE",
       "TOGGLE_INVOICE",
     ]),
-    ...mapActions(["DELETE_INVOICE"]),
+    ...mapActions([
+      "DELETE_INVOICE",
+      "UPDATE_STATUS_TO_PENDING",
+      "UPDATE_STATUS_TO_PAID",
+    ]),
     async deleteInvoice(docId) {
       await this.DELETE_INVOICE(docId);
       this.$router.push({ name: "home" });
@@ -129,6 +133,12 @@ export default {
     toggleEditInvoice() {
       this.TOGGLE_EDIT_INVOICE();
       this.TOGGLE_INVOICE();
+    },
+    updateStatusToPaid(id) {
+      this.UPDATE_STATUS_TO_PAID(id);
+    },
+    updateStatusToPending(id) {
+      this.UPDATE_STATUS_TO_PENDING(id);
     },
   },
   computed: {

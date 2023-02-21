@@ -113,7 +113,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
+import { mapState, mapMutations, mapActions } from "vuex";
 export default {
   methods: {
     ...mapMutations([
@@ -121,6 +121,11 @@ export default {
       "TOGGLE_EDIT_INVOICE",
       "TOGGLE_INVOICE",
     ]),
+    ...mapActions(["DELETE_INVOICE"]),
+    async deleteInvoice(docId) {
+      await this.DELETE_INVOICE(docId);
+      this.$router.push({ name: "home" });
+    },
     toggleEditInvoice() {
       this.TOGGLE_EDIT_INVOICE();
       this.TOGGLE_INVOICE();

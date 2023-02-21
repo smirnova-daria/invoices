@@ -9,14 +9,17 @@
           </div>
           <div class="header-right flex">
             <div class="dropdown flex" @click="toggleFilterMenu">
-              <span>Фильтр по статусу &nbsp;</span>
+              <span
+                >Фильтр по статусу:
+                <span v-if="filterValue">{{ filterValue }}</span> &nbsp;</span
+              >
               <span v-if="!filterMenu"> &#9662;</span>
               <span v-else> &#9652;</span>
               <ul v-show="filterMenu" class="dropdown-list">
-                <li>Черновик</li>
-                <li>В процессе</li>
-                <li>Оплачен</li>
-                <li>Очистить фильтр</li>
+                <li @click="filteredInvoices">Черновик</li>
+                <li @click="filteredInvoices">В процессе</li>
+                <li @click="filteredInvoices">Оплачен</li>
+                <li @click="filteredInvoices">Очистить фильтр</li>
               </ul>
             </div>
             <button @click="newInvoice" class="flex add-btn purple">
@@ -29,7 +32,7 @@
           class="invoice-list flex flex-column"
         >
           <InvoiceInfo
-            v-for="(invoice, index) in invoices"
+            v-for="(invoice, index) in filteredData"
             :key="index"
             :invoice="invoice"
           />
@@ -48,6 +51,7 @@ export default {
   data() {
     return {
       filterMenu: false,
+      filterValue: null,
     };
   },
   methods: {
@@ -58,9 +62,31 @@ export default {
     newInvoice() {
       this.TOGGLE_INVOICE();
     },
+    filteredInvoices(e) {
+      if (e.target.innerText === "Очистить фильтр") {
+        this.filterValue = null;
+        return;
+      }
+      this.filterValue = e.target.innerText;
+    },
   },
   computed: {
     ...mapState(["invoices"]),
+    filteredData() {
+      return this.invoices.filter((invoice) => {
+        if (this.filterValue === "Черновик") {
+          return invoice.invoiceDraft === true;
+        }
+        if (this.filterValue === "В процессе") {
+          return invoice.invoicePending === true;
+        }
+        if (this.filterValue === "Оплачен") {
+          return invoice.invoicePaid === true;
+        }
+
+        return true;
+      });
+    },
   },
 };
 </script>
